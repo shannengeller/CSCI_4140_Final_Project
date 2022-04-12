@@ -3,7 +3,10 @@ import os
 import string
 import random
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+import spacy as sp
 
+# using small model of spacy to train model
+nlp_model = sp.load("en_core_web_sm")
 
 class MyModel:
     """
@@ -11,13 +14,13 @@ class MyModel:
     """
 
     @classmethod
-    def load_training_data(cls):
+    def load_training_data(cls, nlp_model):
         # your code here
         # this particular model doesn't train
         return []
 
     @classmethod
-    def load_test_data(cls, fname):
+    def load_test_data(cls, fname, nlp_model):
         # your code here
         data = []
         with open(fname) as f:
