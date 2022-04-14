@@ -4,24 +4,31 @@ import string
 import random
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import spacy as sp
+import tensorflow as tf
+
 
 # using small model of spacy to train model
-nlp_model = sp.load("en_core_web_sm")
+spacy_model = sp.load("en_core_web_sm")
 
 class MyModel:
-    """
-    This is a starter model to get you started. Feel free to modify this file.
-    """
 
     @classmethod
-    def load_training_data(cls, nlp_model):
-        # your code here
-        # this particular model doesn't train
-        return []
+    def load_training_data(cls, spacy_model):
+
+        # load dictionaries in multiple languages
+        
+        # creating list to store all word options
+        words = []
+
+        # use spacy/tensorflow to analyze words and save training data
+
+        # returning all base words  
+        return words
 
     @classmethod
-    def load_test_data(cls, fname, nlp_model):
-        # your code here
+    def load_test_data(cls, fname, spacy_model):
+        # testing data given by instructor to see how model works 
+
         data = []
         with open(fname) as f:
             for line in f:
@@ -36,11 +43,13 @@ class MyModel:
                 f.write('{}\n'.format(p))
 
     def run_train(self, data, work_dir):
-        # your code here
+        # running our saved training model and trying to use given information and see what our best 3 choices wil be 
+
         pass
 
     def run_pred(self, data):
-        # your code here
+        # taking most common 3 letters using tensorflow function and most common words compared to what user inputs for test data
+
         preds = []
         all_chars = string.ascii_letters
         for inp in data:
@@ -51,6 +60,10 @@ class MyModel:
 
     def save(self, work_dir):
         # your code here
+
+        # going to save whatever suggestions for the 3 letters to a text file for each line of astronauts text
+
+
         # this particular model has nothing to save, but for demonstration purposes we will save a blank file
         with open(os.path.join(work_dir, 'model.checkpoint'), 'wt') as f:
             f.write('dummy save')
