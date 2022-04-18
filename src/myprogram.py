@@ -5,6 +5,7 @@ import random
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import spacy as sp
 import tensorflow as tf
+from corpus import english, French, russian 
 
 
 # using small model of spacy to train model
