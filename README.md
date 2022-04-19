@@ -1,4 +1,4 @@
-# CSE447-project
+# CSCI 4140 Final Project
 
 This repo contains an example submission for the CSE447 project.
 For this project, you will develop a program that takes in a string of character and tries to predict the next character.
