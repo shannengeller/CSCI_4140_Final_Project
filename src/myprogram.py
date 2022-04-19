@@ -12,15 +12,30 @@ class MyModel:
     @classmethod
     def load_training_data(cls):
 
-        # opening english and french text files and putting them into lists
-        filename = "autumn-leaves"
-        raw_text_english = open(filename + ".txt", "r", encoding= 'utf-8').read()
-        raw_text_lowercase = raw_text_english.lower()
+        # opening english text file
+        english_text = "autumn-leaves"
+        raw_text_english = open(english_text + ".txt", "r", encoding= 'utf-8').read()
+        raw_text_lowercase_english = raw_text_english.lower()
 
-        #cleaning the text (getting rid of numbers)
-        clean_raw_text = ' '.join(c for c in raw_text_lowercase if not c.isdigit()) 
+        # opening french text file
+        french_text = "Germain.txt"
+        raw_text_french = open(french_text + ".txt", "r", encoding= 'utf-8').read()
+        raw_text_lowercase_french = raw_text_english.lower()
 
+        #cleaning the english text (getting rid of numbers)
+        clean_english_text = ' '.join(c for c in raw_text_lowercase_english if not c.isdigit()) 
 
+        #cleaning the french text (getting rid of numbers)
+        clean_french_text = ' '.join(c for c in raw_text_lowercase_french if not c.isdigit()) 
+
+        #create a list of all characters within the english training text to see what the most common letters are
+        all_eng_chars = sorted(list(set(clean_english_text)))
+
+        #create a list of all characters within the french training text to see what the most common letters are
+        all_fren_chars = sorted(list(set(clean_french_text)))
+        
+        #map a dictionary to hold letters and numerical values to them
+        char_to_idx = {c: i for i, c in enumerate(all_chars)}
         words = [] 
         return words
 
