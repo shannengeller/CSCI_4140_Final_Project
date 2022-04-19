@@ -34,10 +34,53 @@ class MyModel:
         #create a list of all characters within the french training text to see what the most common letters are
         all_fren_chars = sorted(list(set(clean_french_text)))
         
-        #map a dictionary to hold letters and numerical values to them
-        char_to_idx = {c: i for i, c in enumerate(all_chars)}
-        words = [] 
-        return words
+        #map a dictionary to hold letters and numerical values to them (ENGLISH)
+        eng_chars_to_num = dict((c,i) for i,c in enumerate(all_eng_chars))
+
+        #map a dictionary to hold letters and numerical values to them (FRENCH)
+        fren_chars_to_num = dict((c,i) for i,c in enumerate(all_fren_chars))
+
+        #reverse so we can correlate numbers to letters (ENGLISH)
+        num_to_eng_chars = dict((i,c) for i,c in enumerate(all_eng_chars))
+
+        #reverse so we can correlate numbers to letters (FRENCH)
+        num_to_fren_chars = dict((i,c) for i,c in enumerate(all_fren_chars))
+
+        #Showing all counts for english and french characters
+        french_num_chars = len(clean_french_text)
+        english_num_chars = len(clean_english_text)
+        print("Number of characters in French text:", french_num_chars)
+        print("Number of characters in English text:", english_num_chars)
+
+        #creating input for training (ENGLISH text)
+        seq_length = 60
+        step = 50
+        sentences = []
+        next_chars = []
+
+        for i in range(0, english_num_chars - seq_length, step):
+            sentences.append(clean_english_text[i: i + seq_length])
+            next_chars.append(clean_english_text[i + seq_length])
+
+        n_patterns = len(sentences)
+        print("Number of patterns:", n_patterns)
+
+        #creating input for training (FRENCH text)
+        seq_length = 60
+        step = 50
+        sentences_french = []
+        next_chars_french = []
+
+        for i in range(0, french_num_chars - seq_length, step):
+            sentences_french.append(clean_french_text[i: i + seq_length])
+            next_chars_french.append(clean_french_text[i + seq_length])
+        
+        n_patterns_french = len(sentences_french)
+        print("Number of patterns:", n_patterns_french)
+
+        
+
+        return []
 
     @classmethod
     def load_test_data(cls, fname):
