@@ -168,3 +168,4 @@ if __name__ == '__main__':
         model.write_pred(pred, args.test_output)
     else:
         raise NotImplementedError('Unknown mode {}'.format(args.mode))
+
