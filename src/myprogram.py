@@ -10,7 +10,7 @@ from corpus import english, French, russian
 class MyModel:
 
     @classmethod
-    def load_training_data(cls, spacy_model):
+    def load_training_data(cls):
 
         # opening english and french text files and putting them into lists
         filename = "autumn-leaves"
@@ -25,7 +25,7 @@ class MyModel:
         return words
 
     @classmethod
-    def load_test_data(cls, fname, spacy_model):
+    def load_test_data(cls, fname):
         # testing data given by instructor to see how model works 
 
         data = []
