@@ -1,29 +1,27 @@
 #!/usr/bin/env python
+from encodings import utf_8
 import os
 import string
 import random
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-import spacy as sp
-import tensorflow as tf
+import numpy as np
 from corpus import english, French, russian 
-
-
-# using small model of spacy to train model
-spacy_model = sp.load("en_core_web_sm")
 
 class MyModel:
 
     @classmethod
     def load_training_data(cls, spacy_model):
 
-        # load dictionaries in multiple languages
-        
-        # creating list to store all word options
-        words = []
+        # opening english and french text files and putting them into lists
+        filename = "autumn-leaves"
+        raw_text_english = open(filename + ".txt", "r", encoding= 'utf-8').read()
+        raw_text_lowercase = raw_text_english.lower()
 
-        # use spacy/tensorflow to analyze words and save training data
+        #cleaning the text (getting rid of numbers)
+        clean_raw_text = ' '.join(c for c in raw_text_lowercase if not c.isdigit()) 
 
-        # returning all base words  
+
+        words = [] 
         return words
 
     @classmethod
