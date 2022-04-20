@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 from encodings import utf_8
 import os
+from re import S
 import string
 import random
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from tabnanny import verbose
 import numpy as np
 from corpus import english, French, russian 
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, LSTM
+from keras.optimizers import RMSprop
+from keras.callbacks import ModelCheckpoint
+from matplotlib import pyplot as plt
+import sys
+
 
 class MyModel:
 
@@ -52,6 +61,9 @@ class MyModel:
         print("Number of characters in French text:", french_num_chars)
         print("Number of characters in English text:", english_num_chars)
 
+        eng_vocab = len(all_eng_chars)
+        fren_vocab = len(all_fren_chars)
+
         #creating input for training (ENGLISH text)
         seq_length = 60
         step = 50
@@ -66,8 +78,6 @@ class MyModel:
         print("Number of patterns:", n_patterns)
 
         #creating input for training (FRENCH text)
-        seq_length = 60
-        step = 50
         sentences_french = []
         next_chars_french = []
 
@@ -78,7 +88,100 @@ class MyModel:
         n_patterns_french = len(sentences_french)
         print("Number of patterns:", n_patterns_french)
 
+        #English training with numpy
+        x = np.zeros((len(sentences), seq_length, eng_vocab), dytpe= np.bool)
+        y = np.zeros((len(sentences), eng_vocab), dtype = np.bool)
+        for i, sentence in enumerate(sentences):
+            for t, char in enumerate(sentence):
+                x[i,t,eng_chars_to_num[char]] = 1
+            y[i,eng_chars_to_num[next_chars[i]]] = 1
+
+        print(x.shape)
+        print(y.shape)
+
+        #french training with numpy 
+        x = np.zeros((len(sentences), seq_length, fren_vocab), dytpe= np.bool)
+        y = np.zeros((len(sentences), fren_vocab), dtype = np.bool)
+        for i, sentence in enumerate(sentences):
+            for t, char in enumerate(sentence):
+                x[i,t,fren_chars_to_num[char]] = 1
+            y[i,fren_chars_to_num[next_chars_french[i]]] = 1
+
+        print(x.shape)
+        print(y.shape)
         
+        # MODEL FOR LSTM
+        model = Sequential()
+        model.add(LSTM(128,input_shape = (seq_length, eng_vocab)))
+        model.add(Dense(eng_vocab,activation = 'softmax'))
+
+        optimizer = RMSprop(lr=0.01)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+        model.summary()
+
+
+        filepath = "saved_weights/saved_weights - {epoch:02d}- {loss:.4f}.hdf5"
+        checkpoint = ModelCheckpoint(filepath, monitor='loss',verbose=1, save_best_only=True, mode='min')
+        callbacks_list = [checkpoint]
+
+        # Fit the Model
+
+        history = model.fit(x,y, batch_size=128, epochs=50, callbacks=callbacks_list)
+
+        model.save('my_saved_model.h5')
+
+
+        #matplotlib
+
+        #plot training and validation accuracy and loss at each epoch
+        loss = history.history['loss']
+        epochs = range(1, len(loss) + 1)
+        plt.plot(epochs,loss,'y',label='Training loss')
+        plt.title('Training loss')
+        plt.xlabel('Epochs')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.show()
+
+
+        # predictions
+
+        preds = np.asarray(preds).astype('floated')
+        preds = np.log(preds)
+        exp_preds = np.exp(preds)
+        preds = exp_preds / np.sum(exp_preds)
+        probas = np.random.multinomial(1, preds, 1)
+        result = np.argmax(probas)
+
+
+        # testing example file
+        filename = "input.txt"
+        model.load_weights(filename)
+
+        #english random sentence from text input
+        start_index = random.randint(0, english_num_chars - seq_length - 1)
+
+        generated = ''
+        sentence = raw_text_lowercase_english[start_index: start_index + seq_length]
+        generated += sentence
+
+        print('......... Seed for text prediction "' + sentence + '"')
+
+        #french random sentence from text input
+        #f_start_index = random.randint(0, french_num_chars - seq_length - 1)
+
+        for i in range(500):
+            x_pred = np.zeros((1,seq_length,eng_vocab))
+            for t, char in enumerate(sentence):
+                x_pred[0,t,eng_chars_to_num[char]] = 1
+            preds = model.predict(x_pred, verbose=0)[0]
+            next_index = sample(preds)
+            next_char = num_to_eng_chars[next_index]
+            generated += next_char
+            sentence = sentence[1] + next_char
+        
+        sys.stdout.write(next_char)
+        sys.stdout.flush()
 
         return []
 
@@ -116,10 +219,7 @@ class MyModel:
         return preds
 
     def save(self, work_dir):
-        # your code here
-
-        # going to save whatever suggestions for the 3 letters to a text file for each line of astronauts text
-
+        
 
         # this particular model has nothing to save, but for demonstration purposes we will save a blank file
         with open(os.path.join(work_dir, 'model.checkpoint'), 'wt') as f:
