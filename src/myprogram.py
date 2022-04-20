@@ -27,7 +27,7 @@ class MyModel:
         raw_text_lowercase_english = raw_text_english.lower()
 
         # opening french text file
-        french_text = "Germain.txt"
+        french_text = "Germaine.txt"
         raw_text_french = open(french_text + ".txt", "r", encoding= 'utf-8').read()
         raw_text_lowercase_french = raw_text_english.lower()
 
