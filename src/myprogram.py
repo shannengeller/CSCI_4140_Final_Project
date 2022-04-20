@@ -241,9 +241,7 @@ if __name__ == '__main__':
 
     print('......... Seed for text prediction "' + sentence + '"')
 
-    #french random sentence from text input
-    #f_start_index = random.randint(0, french_num_chars - seq_length - 1)
-
+    # Predict 3 letters
     x_pred = np.zeros((1, seq_length, eng_vocab))
     for t, char in enumerate(sentence):
         x_pred[0, t, eng_chars_to_num[char]] = 1.
